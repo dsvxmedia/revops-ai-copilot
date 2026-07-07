@@ -14,10 +14,36 @@ and switches to live Claude generation when `ANTHROPIC_API_KEY` is set.
 
 ## Current status
 
-**Scaffolding only.** All `.py`/`.json`/`.cls`/`.xml` files currently contain stub docstrings
-marked `TODO(weaponx)` pointing at the relevant plan section. No business logic has been
-implemented yet. The weaponx build loop implements these next, in the dependency order below.
-**Update this section as modules land** — don't leave it stale.
+**Implemented and working end-to-end in mock mode.** Every `TODO(weaponx)` stub has been
+replaced with a real implementation: models, config (incl. `SCORING_WEIGHTS`), JSON-line
+logging, the 8 sample leads + content blocks + manual baseline, all three clients
+(Salesforce/enrichment/marketing), all services (data quality, enrichment, scoring, routing,
+generation, guardrails, content library, telemetry), the LLM layer (`prompts.py`,
+`claude_client.py`), the orchestration workflow, the Streamlit app + 2 pages, the illustrative
+`salesforce_native/` Apex + Flow + README, and real unit tests.
+
+Verified (2026-07-07):
+- `python -m unittest discover tests` → **38 tests, OK**.
+- All 8 sample leads run deterministically in zero-key mock mode with **no network calls** and
+  no fallbacks; each hits its engineered routing outcome (AE, Nurture, RFP→proposal,
+  Needs-Human-Review disagreement, SDR boundary, out-of-territory override, SDR, existing-account).
+- Headless Streamlit (`--server.headless true --server.port 8765`) serves: `/_stcore/health`
+  returns `ok`, root returns `200`. Streamlit **1.59.0**; `pages/` numeric-prefix auto-discovery
+  works with no `st.navigation` needed.
+
+Web enrichment (Scrapling) is **opt-in** (`REVOPS_WEB_ENRICHMENT=1`) so the primary demo stays
+network-free and deterministic; when enabled it does a real best-effort fetch and falls back to
+mock on any failure (verified: unreachable host degrades in ~0.3s, no hang). Scoring is
+deterministic (rule + mock-AI heuristic) in **both** modes — only the 3 generation tasks call
+Claude live. See `LEARNING.md` for the rationale and other build-time decisions.
+
+**Visual design (2026-07-07):** redesigned per user feedback that the default Streamlit look
+plus emoji read as unpolished for a job-application demo. `revops_copilot/ui_theme.py` now
+supplies a shared warm-neutral palette, one restrained ink-teal accent, serif/sans type system,
+muted dot+tint status badges, and CSS-only entrance motion — call `ui_theme.inject()` at the top
+of every page. Zero emoji anywhere in the codebase (verified by regex sweep). Both dashboard
+charts use `st.altair_chart` (themed) instead of default `st.bar_chart`. See `LEARNING.md` for
+the Altair tooltip-typing gotcha and the copy bug it surfaced and fixed.
 
 ## Folder map (what lives where)
 

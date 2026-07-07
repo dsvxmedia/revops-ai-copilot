@@ -1,4 +1,5 @@
 streamlit>=1.38
+altair>=5.0
 anthropic>=0.40
 python-dotenv>=1.0
 opik

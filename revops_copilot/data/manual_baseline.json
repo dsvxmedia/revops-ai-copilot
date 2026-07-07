@@ -1,1 +1,16 @@
-{}
+{
+  "_note": "ILLUSTRATIVE assumptions only — not measured data. These model how long each step takes a human rep/RevOps analyst doing the work manually, and are surfaced in the app clearly labelled as estimates. Values are in seconds.",
+  "per_task_seconds": {
+    "intake": 120,
+    "data_quality": 300,
+    "enrichment": 900,
+    "scoring": 240,
+    "routing": 180,
+    "marketing_enrollment": 300,
+    "rep_brief": 1200,
+    "email": 600,
+    "proposal": 5400
+  },
+  "assumed_first_response_hours_manual": 24,
+  "assumed_first_response_hours_automated": 0.05
+}
