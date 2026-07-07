@@ -83,8 +83,12 @@ def _template_rep_brief(
 ) -> RepBrief:
     acct_type = account.Type if account else lead.Industry
     tech = ", ".join(account.TechStack) if account and account.TechStack else "no LMS on record"
+    segment_phrase = (
+        f"a {acct_type} organization" if acct_type == lead.Industry
+        else f"a {acct_type} organization in {lead.Industry}"
+    )
     summary = (
-        f"{lead.Company} is a {acct_type} organization in {lead.Industry} "
+        f"{lead.Company} is {segment_phrase} "
         f"with {lead.NumberOfEmployees} employees. Current stack: {tech}. "
         f"Inbound via {lead.LeadSource}."
     )

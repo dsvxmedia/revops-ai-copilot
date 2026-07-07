@@ -8,11 +8,12 @@ import json
 
 import streamlit as st
 
-from revops_copilot import config
+from revops_copilot import config, ui_theme
 from revops_copilot.orchestration import workflow
 
-st.set_page_config(page_title="Before vs After — RevOps Copilot", page_icon="⚖️", layout="wide")
-st.title("⚖️ Before vs After")
+st.set_page_config(page_title="Before vs After — RevOps Copilot", layout="wide")
+ui_theme.inject()
+st.title("Before vs After")
 st.caption("Manual RevOps process vs. the automated copilot, for the selected scenario.")
 
 with open(config.MANUAL_BASELINE_PATH, "r", encoding="utf-8") as fh:
@@ -28,7 +29,7 @@ auto_total_s = result.total_cycle_time_seconds
 
 left, right = st.columns(2)
 with left:
-    st.subheader("🧑‍💼 Manual process (today)")
+    st.subheader("Manual process (today)")
     st.markdown(
         "- Rep manually researches the company across tabs and tools\n"
         "- Scoring is ad hoc and inconsistent between reps\n"
@@ -41,7 +42,7 @@ with left:
     st.json({k: baseline.get(k, 0) for k in result.step_timings}, expanded=False)
 
 with right:
-    st.subheader("🤖 Automated copilot")
+    st.subheader("Automated copilot")
     st.markdown(
         f"- Deterministic data-quality + enrichment pass\n"
         f"- Consistent, tunable scoring → **{result.routing.routing_outcome}**\n"
@@ -59,9 +60,21 @@ with right:
 st.divider()
 st.subheader("Why this matters (qualitative)")
 q1, q2, q3 = st.columns(3)
-q1.info("**Consistency** — every lead scored by the same tunable rubric, not gut feel.")
-q2.info("**Always-on** — first-touch in seconds, not hours; no nights/weekends gap.")
-q3.info("**Auditable** — guardrails + human-review gate + telemetry on every run.")
+with q1:
+    st.markdown(
+        ui_theme.note("<strong>Consistency</strong> — every lead scored by the same tunable rubric, not gut feel.", "sdr"),
+        unsafe_allow_html=True,
+    )
+with q2:
+    st.markdown(
+        ui_theme.note("<strong>Always-on</strong> — first-touch in seconds, not hours; no nights/weekends gap.", "sdr"),
+        unsafe_allow_html=True,
+    )
+with q3:
+    st.markdown(
+        ui_theme.note("<strong>Auditable</strong> — guardrails, human-review gate, and telemetry on every run.", "sdr"),
+        unsafe_allow_html=True,
+    )
 
 st.caption(
     "All manual-baseline and time-compression figures are illustrative assumptions for "

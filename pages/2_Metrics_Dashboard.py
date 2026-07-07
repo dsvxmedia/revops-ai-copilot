@@ -7,21 +7,26 @@ See plan sections "Streamlit App" and "Telemetry".
 """
 from __future__ import annotations
 
+import altair as alt
 import streamlit as st
 
+from revops_copilot import ui_theme
 from revops_copilot.orchestration import workflow
 from revops_copilot.services import telemetry_service
 
-st.set_page_config(page_title="Metrics Dashboard — RevOps Copilot", page_icon="📊", layout="wide")
-st.title("📊 Metrics Dashboard")
+st.set_page_config(page_title="Metrics Dashboard — RevOps Copilot", layout="wide")
+ui_theme.inject()
+st.title("Metrics Dashboard")
 st.caption("Aggregate telemetry across all runs recorded in the SQLite store.")
 
 col_a, col_b = st.columns([0.7, 0.3])
 with col_b:
-    if st.button("▶ Run all 8 sample leads", use_container_width=True):
+    if st.button("Run all 8 sample leads", use_container_width=True):
         for lead_id, _ in workflow.list_sample_leads():
             workflow.run_workflow(lead_id)
-        st.success("Ran all 8 scenarios.")
+        st.markdown(
+            ui_theme.note("Ran all 8 scenarios.", "ae"), unsafe_allow_html=True
+        )
 
 summary = telemetry_service.compute_summary_metrics()
 runs = telemetry_service.fetch_runs()
@@ -53,19 +58,53 @@ st.caption(
     "response-time compression only. Illustrative, not a backtest."
 )
 
+# --- Chart theme --------------------------------------------------------------
+def _themed_bar(data: list[dict], x: str, y: str, color_map: dict | None = None) -> alt.Chart:
+    base = alt.Chart(alt.Data(values=data)).mark_bar(size=34, cornerRadiusTopLeft=3, cornerRadiusTopRight=3)
+    encode_kwargs = dict(
+        x=alt.X(f"{x}:N", sort=None, title=None, axis=alt.Axis(labelAngle=0, labelColor=ui_theme.TEXT_MUTED, domainColor=ui_theme.BORDER, tickColor=ui_theme.BORDER)),
+        y=alt.Y(f"{y}:Q", title=None, axis=alt.Axis(labelColor=ui_theme.TEXT_MUTED, gridColor=ui_theme.BORDER, domain=False, tickCount=4)),
+        tooltip=[f"{x}:N", f"{y}:Q"],
+    )
+    if color_map:
+        encode_kwargs["color"] = alt.Color(
+            f"{x}:N",
+            scale=alt.Scale(domain=list(color_map.keys()), range=list(color_map.values())),
+            legend=None,
+        )
+    else:
+        encode_kwargs["color"] = alt.value(ui_theme.ACCENT)
+    return (
+        base.encode(**encode_kwargs)
+        .properties(height=260, background="transparent")
+        .configure_view(strokeWidth=0)
+    )
+
+
 # --- Cycle-time comparison ---------------------------------------------------
 st.subheader("Cycle time: manual baseline vs automated")
 avg_manual_min = summary["avg_manual_baseline_seconds"] / 60.0
 avg_auto_min = summary["avg_cycle_time_seconds"] / 60.0
-st.bar_chart(
-    {"Minutes": {"Manual baseline": avg_manual_min, "Automated": max(avg_auto_min, 0.0001)}}
+cycle_data = [
+    {"Series": "Automated", "Minutes": max(avg_auto_min, 0.0001)},
+    {"Series": "Manual baseline", "Minutes": avg_manual_min},
+]
+st.altair_chart(
+    _themed_bar(
+        cycle_data,
+        "Series",
+        "Minutes",
+        color_map={"Automated": ui_theme.ACCENT, "Manual baseline": ui_theme.BORDER},
+    ),
+    use_container_width=True,
 )
 
 # --- Routing distribution ----------------------------------------------------
 st.subheader("Routing-outcome distribution")
 dist = telemetry_service.routing_distribution()
 if dist:
-    st.bar_chart({"Runs": dist})
+    dist_data = [{"Outcome": k, "Runs": v} for k, v in dist.items()]
+    st.altair_chart(_themed_bar(dist_data, "Outcome", "Runs"), use_container_width=True)
 
 # --- Raw run log -------------------------------------------------------------
 st.subheader("Run log")
