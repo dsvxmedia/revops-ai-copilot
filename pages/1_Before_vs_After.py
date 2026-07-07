@@ -11,7 +11,7 @@ import streamlit as st
 from revops_copilot import config, ui_theme
 from revops_copilot.orchestration import workflow
 
-st.set_page_config(page_title="Before vs After — RevOps Copilot", layout="wide")
+st.set_page_config(page_title="Before vs After: RevOps Copilot", layout="wide")
 ui_theme.inject()
 st.title("Before vs After")
 st.caption("Manual RevOps process vs. the automated copilot, for the selected scenario.")
@@ -62,17 +62,17 @@ st.subheader("Why this matters (qualitative)")
 q1, q2, q3 = st.columns(3)
 with q1:
     st.markdown(
-        ui_theme.note("<strong>Consistency</strong> — every lead scored by the same tunable rubric, not gut feel.", "sdr"),
+        ui_theme.note("<strong>Consistency</strong>: every lead scored by the same tunable rubric, not gut feel.", "sdr"),
         unsafe_allow_html=True,
     )
 with q2:
     st.markdown(
-        ui_theme.note("<strong>Always-on</strong> — first-touch in seconds, not hours; no nights/weekends gap.", "sdr"),
+        ui_theme.note("<strong>Always-on</strong>: first-touch in seconds, not hours, with no nights or weekends gap.", "sdr"),
         unsafe_allow_html=True,
     )
 with q3:
     st.markdown(
-        ui_theme.note("<strong>Auditable</strong> — guardrails, human-review gate, and telemetry on every run.", "sdr"),
+        ui_theme.note("<strong>Auditable</strong>: guardrails, human-review gate, and telemetry on every run.", "sdr"),
         unsafe_allow_html=True,
     )
 

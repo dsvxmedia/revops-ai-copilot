@@ -120,7 +120,7 @@ def run_workflow(
         lambda: generation_service.generate_email(lead, result.account, result.routing),
     )
 
-    # 9. Proposal (RFP only) — ALWAYS forced to human review
+    # 9. Proposal (RFP only): ALWAYS forced to human review
     if result.routing.proposal_required:
         proposal = timer.run(
             "proposal", lambda: generation_service.generate_proposal(lead, result.account)

@@ -1,9 +1,10 @@
 """Metrics Dashboard: KPI cards, cycle-time chart, routing distribution,
 pipeline-velocity lift, and the raw run log.
 
-All of our own data is plain dicts/lists -- no pandas DataFrames anywhere in
-this project's own logic. The one `import pandas` below is not that; it's a
-workaround for a third-party library thread-race bug, see its comment.
+All of our own data is plain dicts and lists. There are no pandas DataFrames
+anywhere in this project's own logic. The one `import pandas` below is not
+that; it's a workaround for a third-party library thread-race bug, see its
+comment.
 
 See plan sections "Streamlit App" and "Telemetry".
 """
@@ -17,7 +18,7 @@ from __future__ import annotations
 # Streamlit's background file-watcher thread also touching pandas, Python's
 # import system can hand back a partially-initialized module and raise
 # `AttributeError: partially initialized module 'pandas' ... (most likely due
-# to a circular import)` -- a real bug hit during manual QA (rapid-fire
+# to a circular import)`. This is a real bug hit during manual QA (rapid-fire
 # "Run all 8 sample leads"), not a fluke. Doing the import here, synchronously,
 # on every page load closes that race window.
 import pandas  # noqa: F401
@@ -29,7 +30,7 @@ from revops_copilot import ui_theme
 from revops_copilot.orchestration import workflow
 from revops_copilot.services import telemetry_service
 
-st.set_page_config(page_title="Metrics Dashboard — RevOps Copilot", layout="wide")
+st.set_page_config(page_title="Metrics Dashboard: RevOps Copilot", layout="wide")
 ui_theme.inject()
 st.title("Metrics Dashboard")
 st.caption("Aggregate telemetry across all runs recorded in the SQLite store.")
@@ -69,8 +70,8 @@ st.caption(
     "Model: pipeline_velocity = (opportunities × win_rate × avg_deal_size) / cycle_days. "
     f"Assumes {pv['assumptions']['num_opportunities']} opps, "
     f"{pv['assumptions']['win_rate'] * 100:.0f}% win rate, "
-    f"${pv['assumptions']['avg_deal_size']:,.0f} avg deal — "
-    "response-time compression only. Illustrative, not a backtest."
+    f"${pv['assumptions']['avg_deal_size']:,.0f} avg deal. "
+    "Response-time compression only. Illustrative, not a backtest."
 )
 
 # --- Chart theme --------------------------------------------------------------

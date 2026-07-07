@@ -1,20 +1,20 @@
 # RevOps AI Copilot
 
 **[Live demo →](https://revops-ai-copilot.streamlit.app)** · built for a Cengage job application
-(AI Automation Engineer – Sales & Marketing)
+(AI Automation Engineer, Sales & Marketing)
 
-A working portfolio demo that simulates a Salesforce-centered "Revenue Ops AI Copilot" — takes an
-inbound lead or RFP request and automates enrichment, scoring/routing, rep-brief and email
+A working portfolio demo simulating a Salesforce-centered "Revenue Ops AI Copilot." It takes an
+inbound lead or RFP request and automates enrichment, scoring and routing, rep-brief and email
 generation, proposal drafting, and telemetry, the way this role's JD describes the day-to-day work.
 
-![Run Copilot — full pipeline for a hot enterprise lead](docs/screenshots/run-copilot.png)
+![Run Copilot: full pipeline for a hot enterprise lead](docs/screenshots/run-copilot.png)
 
 **Status:** implemented and working end-to-end in mock mode (38 unit tests passing; all 8 sample
 scenarios run deterministically with no API key and no network). See `CLAUDE.md` for the current
 build status and `LEARNING.md` for facts verified during the build.
 
-**Guides:** [USAGE.md](USAGE.md) — detailed how-to-use walkthrough (also built into the app
-itself; click **How to Use** in the sidebar). [BUILD_PROCESS.md](BUILD_PROCESS.md) — a full
+**Guides:** [USAGE.md](USAGE.md) is a detailed how-to-use walkthrough (also built into the app
+itself; click **How to Use** in the sidebar). [BUILD_PROCESS.md](BUILD_PROCESS.md) is a full
 account of how this was built, plan to production, including every real bug found along the way.
 
 > Note: the real web-enrichment source (Scrapling) is opt-in via `REVOPS_WEB_ENRICHMENT=1` so the
@@ -23,8 +23,8 @@ account of how this was built, plan to production, including every real bug foun
 ## Why this exists (business value)
 
 Sales and RevOps teams lose hours per lead to manual research, inconsistent scoring, and slow
-follow-up. This demo shows how a right-sized AI layer — not a black box, with guardrails and a
-human-review gate — can compress that cycle time while staying auditable. It's built specifically
+follow-up. This demo shows how a right-sized AI layer (not a black box, with guardrails and a
+human-review gate) can compress that cycle time while staying auditable. It's built specifically
 to map to this JD's responsibilities, not as a generic AI chatbot demo.
 
 ## JD-responsibility mapping
@@ -37,8 +37,8 @@ to map to this JD's responsibilities, not as a generic AI chatbot demo.
 | Automate campaign workflows across marketing platforms | `clients/marketing_platform_client.py`, called for every Nurture-routed lead |
 | Data quality, hygiene, and enrichment automation | `services/data_quality_service.py`, `clients/enrichment_client.py` (real Scrapling-based web signal + mock fallback) |
 | Instrument workflows with telemetry; monitor for reliability/drift | `services/telemetry_service.py` (SQLite metrics) + Opik tracing in `llm/claude_client.py` |
-| Quantify cycle-time reduction and pipeline velocity gains | Metrics Dashboard page — automated-vs-manual cycle time, pipeline-velocity lift % and $ |
-| Integrate AI directly into Salesforce via Apex, Flow, Einstein | `salesforce_native/` — illustrative Invocable Apex + Flow definition (not executed by the demo) |
+| Quantify cycle-time reduction and pipeline velocity gains | Metrics Dashboard page: automated-vs-manual cycle time, pipeline-velocity lift % and $ |
+| Integrate AI directly into Salesforce via Apex, Flow, Einstein | `salesforce_native/`: illustrative Invocable Apex + Flow definition (not executed by the demo) |
 | Ship weekly improvements, maintain documentation/runbooks | `CHANGELOG.md`, this README, `CLAUDE.md`/`LEARNING.md` |
 
 ## Architecture
@@ -63,7 +63,7 @@ flowchart TD
 ```
 
 Every external dependency (Claude, Opik, Scrapling, Salesforce, marketing platforms) has a
-mock/template fallback — nothing hard-crashes the demo if a key or package is missing.
+mock/template fallback, so nothing hard-crashes the demo if a key or package is missing.
 
 ## Setup & Run
 
@@ -73,7 +73,7 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Runs immediately in **mock/template mode** — no API key required, fully deterministic.
+Runs immediately in **mock/template mode**: no API key required, fully deterministic.
 
 To enable live Claude generation and Opik tracing, copy `.env.example` to `.env`, fill in the
 keys, and additionally install the optional integrations:
@@ -84,27 +84,27 @@ cp .env.example .env
 pip install -r requirements-optional.txt   # opik tracing + real Scrapling web enrichment
 ```
 
-`requirements-optional.txt` is deliberately kept out of the main install — both packages are
+`requirements-optional.txt` is deliberately kept out of the main install. Both packages are
 lazily imported and their absence never breaks the app, so cloud deploys (e.g. Streamlit
 Community Cloud) stay on the lean, fast, reliable `requirements.txt` build.
 
 Run tests: `python -m unittest discover tests`
 
-## Demo script (3–5 minutes)
+## Demo script (3-5 minutes)
 
-1. **Hot Enterprise — State University System**: select it, hit "Run Copilot," narrate each step
-   as it renders — data quality, enrichment, scoring breakdown, AE routing, rep brief, email.
-2. **RFP — Community College District**: shows the proposal-draft branch and the "Needs Human
+1. **Hot Enterprise, State University System**: select it, hit "Run Copilot," and narrate each
+   step as it renders: data quality, enrichment, scoring breakdown, AE routing, rep brief, email.
+2. **RFP, Community College District**: shows the proposal-draft branch and the "Needs Human
    Review" banner (proposals are always gated to human review, by design).
 
    ![Proposal draft with human-review gate](docs/screenshots/proposal-review.png)
-3. **Ambiguous — Workforce Training Co**: shows rule-score vs. AI-confidence disagreeing, forcing
-   Needs Human Review — the guardrail/fallback story in action.
-4. Flip to **Before vs. After** for a qualitative + quantitative manual-vs-automated comparison.
+3. **Ambiguous, Workforce Training Co**: shows rule-score vs. AI-confidence disagreeing, forcing
+   Needs Human Review, the guardrail/fallback story in action.
+4. Flip to **Before vs. After** for a qualitative and quantitative manual-vs-automated comparison.
 
    ![Before vs After comparison](docs/screenshots/before-after.png)
 5. End on **Metrics Dashboard**: cycle time, automation success rate, and the pipeline-velocity
-   lift estimate — tie it back to revenue language, not just "seconds saved."
+   lift estimate. Tie it back to revenue language, not just "seconds saved."
 
    ![Metrics Dashboard with pipeline-velocity model](docs/screenshots/metrics-dashboard.png)
 
@@ -115,7 +115,7 @@ Run tests: `python -m unittest discover tests`
   genuinely real integration (a lightweight, etiquette-respecting web fetch).
 - Manual-baseline timings and the pipeline-velocity model are illustrative assumptions based on
   the sample data, not measured production data.
-- Single-user, local SQLite, no auth — a demo, not a production service.
+- Single-user, local SQLite, no auth: a demo, not a production service.
 - `salesforce_native/` Apex/Flow files are illustrative only; they are not deployed to or tested
   against a real Salesforce org.
 
@@ -125,5 +125,5 @@ Run tests: `python -m unittest discover tests`
   `salesforce_native/` Apex/Flow path for a fully native deployment).
 - `clients/enrichment_client.py` -> a real ZoomInfo/Clearbit/Apollo SDK/API.
 - `clients/marketing_platform_client.py` -> real Marketo/HubSpot/Salesforce Marketing Cloud APIs.
-- Scoring's rule-engine constants (`SCORING_WEIGHTS`) are named and tunable — a real deployment
+- Scoring's rule-engine constants (`SCORING_WEIGHTS`) are named and tunable: a real deployment
   would tune these against historical conversion data instead of illustrative defaults.

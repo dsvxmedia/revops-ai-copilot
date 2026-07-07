@@ -1,4 +1,4 @@
-"""Streamlit entrypoint — the "Run the Copilot" screen.
+"""Streamlit entrypoint: the "Run the Copilot" screen.
 
 Renders the pipeline sequentially so it plays like watching a real system run:
 Lead Intake -> Data Quality -> Enrichment -> Scoring & Routing ->
@@ -85,27 +85,27 @@ if run_clicked:
 
     lead = result.lead
 
-    # Step 1 — Intake
+    # Step 1: Intake
     with st.status("1. Lead Intake", expanded=True) as s:
         c1, c2, c3 = st.columns(3)
         c1.metric("Company", lead.Company)
-        c2.metric("Industry", lead.Industry or "—")
+        c2.metric("Industry", lead.Industry or "-")
         c3.metric("Request Type", lead.RequestType)
         st.write(
-            f"**{lead.full_name}** · {lead.Title or '—'} · {lead.Email or '—'} · "
-            f"Source: {lead.LeadSource or '—'} · Territory: {lead.Territory__c or '—'}"
+            f"**{lead.full_name}** · {lead.Title or '-'} · {lead.Email or '-'} · "
+            f"Source: {lead.LeadSource or '-'} · Territory: {lead.Territory__c or '-'}"
         )
         if lead.Description:
             st.caption(lead.Description)
         _pause(0.4)
-        s.update(label="1. Lead Intake — loaded", state="complete")
+        s.update(label="1. Lead Intake: loaded", state="complete")
 
-    # Step 2 — Data Quality
+    # Step 2: Data Quality
     dq = result.data_quality
     with st.status("2. Data Quality Check", expanded=True) as s:
         if dq.flags:
             for flag in dq.flags:
-                st.write(f"– {flag}")
+                st.write(f"- {flag}")
         else:
             st.write("No data-quality issues detected.")
         if dq.duplicate_of:
@@ -117,25 +117,25 @@ if run_clicked:
                 unsafe_allow_html=True,
             )
         _pause(0.5)
-        s.update(label=f"2. Data Quality Check — {len(dq.flags)} flag(s)", state="complete")
+        s.update(label=f"2. Data Quality Check: {len(dq.flags)} flag(s)", state="complete")
 
-    # Step 3 — Enrichment
+    # Step 3: Enrichment
     enr = result.enrichment
     acct = result.account
     with st.status("3. Enrichment", expanded=True) as s:
         c1, c2, c3 = st.columns(3)
-        c1.metric("Account Type", acct.Type if acct else "—")
-        c2.metric("Employees", f"{acct.NumberOfEmployees:,}" if acct else "—")
-        c3.metric("Billing State", acct.BillingState if acct else "—")
+        c1.metric("Account Type", acct.Type if acct else "-")
+        c2.metric("Employees", f"{acct.NumberOfEmployees:,}" if acct else "-")
+        c3.metric("Billing State", acct.BillingState if acct else "-")
         st.write("**Tech stack (LMS/ed-tech):** " + (", ".join(acct.TechStack) if acct and acct.TechStack else "none detected"))
         tag = "live web signal" if enr and enr.web_signal_used else "simulated"
         st.caption(f"Enrichment source: {tag}")
         for enrichment_note in (enr.notes if enr else []):
-            st.caption(f"– {enrichment_note}")
+            st.caption(f"- {enrichment_note}")
         _pause(0.5)
-        s.update(label="3. Enrichment — complete", state="complete")
+        s.update(label="3. Enrichment: complete", state="complete")
 
-    # Step 4 — Scoring & Routing
+    # Step 4: Scoring & Routing
     score = result.score
     routing = result.routing
     with st.status("4. Scoring & Routing", expanded=True) as s:
@@ -152,16 +152,16 @@ if run_clicked:
         if routing.needs_human_review:
             st.markdown(
                 ui_theme.note(
-                    "<strong>Needs human review</strong> — rule score and AI confidence "
+                    "<strong>Needs human review</strong>: rule score and AI confidence "
                     "disagree beyond threshold.",
                     "review",
                 ),
                 unsafe_allow_html=True,
             )
         _pause(0.5)
-        s.update(label=f"4. Scoring & Routing — {routing.routing_outcome}", state="complete")
+        s.update(label=f"4. Scoring & Routing: {routing.routing_outcome}", state="complete")
 
-    # Step 5 — Marketing enrollment (conditional)
+    # Step 5: Marketing enrollment (conditional)
     if result.marketing_enrollment:
         me = result.marketing_enrollment
         with st.status("5. Marketing Campaign Enrollment", expanded=True) as s:
@@ -174,47 +174,47 @@ if run_clicked:
                 unsafe_allow_html=True,
             )
             _pause(0.4)
-            s.update(label="5. Marketing Campaign Enrollment — enrolled", state="complete")
+            s.update(label="5. Marketing Campaign Enrollment: enrolled", state="complete")
 
-    # Step 6 — Rep Brief
+    # Step 6: Rep Brief
     brief = result.rep_brief
     with st.status("6. Rep Brief", expanded=True) as s:
         if brief.guardrail_fallback_used:
             st.markdown(
-                ui_theme.note("Generated via fallback template — review recommended.", "nurture"),
+                ui_theme.note("Generated via fallback template. Review recommended.", "nurture"),
                 unsafe_allow_html=True,
             )
         st.write(f"**Account summary:** {brief.account_summary}")
         st.write("**Key signals:** " + ", ".join(brief.key_signals))
         with st.expander("Likely objections & responses"):
             for ob in brief.likely_objections:
-                st.write(f"- **{ob.get('objection')}** – {ob.get('suggested_response')}")
+                st.write(f"- **{ob.get('objection')}**: {ob.get('suggested_response')}")
         st.write(f"**Next best action:** {brief.next_best_action}")
         st.caption(f"Talk track: {brief.recommended_talk_track}")
         _pause(0.4)
-        s.update(label="6. Rep Brief — drafted", state="complete")
+        s.update(label="6. Rep Brief: drafted", state="complete")
 
-    # Step 7 — Follow-up Email
+    # Step 7: Follow-up Email
     email = result.email
     with st.status("7. Follow-up Email", expanded=True) as s:
         if email.guardrail_fallback_used:
             st.markdown(
-                ui_theme.note("Generated via fallback template — review recommended.", "nurture"),
+                ui_theme.note("Generated via fallback template. Review recommended.", "nurture"),
                 unsafe_allow_html=True,
             )
         st.write(f"**Subject:** {email.subject}")
         st.text(email.body)
         st.write(f"**CTA:** {email.call_to_action}")
         _pause(0.4)
-        s.update(label="7. Follow-up Email — drafted", state="complete")
+        s.update(label="7. Follow-up Email: drafted", state="complete")
 
-    # Step 8 — Proposal (conditional)
+    # Step 8: Proposal (conditional)
     if result.proposal:
         prop = result.proposal
         with st.status("8. Proposal / RFP Draft", expanded=True) as s:
             st.markdown(
                 ui_theme.note(
-                    "<strong>Needs human review</strong> — proposals are always gated to a "
+                    "<strong>Needs human review</strong>: proposals are always gated to a "
                     "human before send.",
                     "review",
                 ),
@@ -228,17 +228,17 @@ if run_clicked:
             if prop.guardrail_fallback_used:
                 st.markdown(
                     ui_theme.note(
-                        "Generated via fallback template — review recommended.", "nurture"
+                        "Generated via fallback template. Review recommended.", "nurture"
                     ),
                     unsafe_allow_html=True,
                 )
             for section in prop.sections:
-                with st.expander(f"{section.get('title')}  ·  cites {', '.join(section.get('content_block_ids', []) or ['—'])}"):
+                with st.expander(f"{section.get('title')}  ·  cites {', '.join(section.get('content_block_ids', []) or ['-'])}"):
                     st.write(section.get("content"))
             _pause(0.4)
-            s.update(label="8. Proposal / RFP Draft — drafted (human review required)", state="complete")
+            s.update(label="8. Proposal / RFP Draft: drafted (human review required)", state="complete")
 
-    # Step 9 — Telemetry
+    # Step 9: Telemetry
     with st.status("9. Telemetry Recorded", expanded=True) as s:
         c1, c2, c3 = st.columns(3)
         c1.metric("Automated cycle time", f"{result.total_cycle_time_seconds:.3f}s")
@@ -258,7 +258,7 @@ if run_clicked:
 
     st.markdown(
         ui_theme.note(
-            f"Run complete for <strong>{lead.Company}</strong> → "
+            f"Run complete for <strong>{lead.Company}</strong>: "
             f"<strong>{routing.routing_outcome}</strong> (run <code>{result.run_id[:8]}</code>). "
             "Open the Metrics Dashboard to see aggregate impact.",
             "ae",

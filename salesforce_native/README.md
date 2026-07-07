@@ -1,8 +1,8 @@
 # Salesforce-Native Deployment Path (illustrative, not executed)
 
 These files are **not run by the Streamlit demo**. They document how this workflow
-would ship inside a real Salesforce org, for interview credibility on Apex / Flow /
-Einstein — without pretending the demo has a live Salesforce backend.
+would ship inside a real Salesforce org, for interview credibility on Apex, Flow, and
+Einstein, without pretending the demo has a live Salesforce backend.
 
 ## Production flow
 
@@ -31,9 +31,9 @@ Write-back to the Lead   →  AI_Score__c, AI_Routing__c,
 - **Named Credential** (`RevOps_Copilot_API`) holds the endpoint + auth, so no
   secrets live in Apex. The callout targets `callout:RevOps_Copilot_API/v1/score`.
 - **Async callout** via `@future(callout=true)` (or Queueable) keeps the trigger
-  context legal — callouts can't run before pending DML in a synchronous trigger.
+  context legal: callouts can't run before pending DML in a synchronous trigger.
 - **Graceful degrade**: a non-200 or exception is logged and the Lead is simply
-  left for manual handling — same fallback philosophy as the Python service.
+  left for manual handling, the same fallback philosophy as the Python service.
 - **Custom fields** required in the org: `AI_Score__c` (Number), `AI_Routing__c`
   (Text), `AI_Needs_Human_Review__c` (Checkbox), `AI_Rep_Brief__c` (Long Text),
   and `RequestType__c` (Picklist: Inbound Lead / RFP Request).
@@ -49,5 +49,5 @@ custom rules can act as an override/routing layer on top of Einstein's propensit
 
 ## Not included on purpose
 
-No `package.xml`, no test classes, no org deploy. These are reference artifacts —
-well-formed Apex and Flow metadata — meant to be read, not `sfdx force:source:deploy`'d.
+No `package.xml`, no test classes, no org deploy. These are reference artifacts,
+well-formed Apex and Flow metadata, meant to be read, not `sfdx force:source:deploy`'d.
