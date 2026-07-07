@@ -1,0 +1,11 @@
+# Optional integrations -- NOT required for the core demo (mock mode covers everything).
+# The app's imports of both packages are lazy/guarded (see revops_copilot/llm/claude_client.py
+# and revops_copilot/clients/enrichment_client.py) -- their absence never breaks anything.
+#
+# Install with: pip install -r requirements-optional.txt
+#
+# Deliberately kept OUT of requirements.txt so cloud deploys (e.g. Streamlit Community Cloud)
+# stay fast and reliable -- neither package is needed to build or run the primary demo path.
+
+opik        # optional: LLM call tracing/observability, only used in live Claude mode
+scrapling   # optional: real web-enrichment fetch, only used if REVOPS_WEB_ENRICHMENT=1

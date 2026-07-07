@@ -67,12 +67,18 @@ streamlit run app.py
 
 Runs immediately in **mock/template mode** — no API key required, fully deterministic.
 
-To enable live Claude generation and Opik tracing, copy `.env.example` to `.env` and fill in:
+To enable live Claude generation and Opik tracing, copy `.env.example` to `.env`, fill in the
+keys, and additionally install the optional integrations:
 
 ```bash
 cp .env.example .env
 # then set ANTHROPIC_API_KEY=... (and optionally OPIK_API_KEY=...)
+pip install -r requirements-optional.txt   # opik tracing + real Scrapling web enrichment
 ```
+
+`requirements-optional.txt` is deliberately kept out of the main install — both packages are
+lazily imported and their absence never breaks the app, so cloud deploys (e.g. Streamlit
+Community Cloud) stay on the lean, fast, reliable `requirements.txt` build.
 
 Run tests: `python -m unittest discover tests`
 

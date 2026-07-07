@@ -103,6 +103,11 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
+`opik` and `scrapling` live in `requirements-optional.txt`, not `requirements.txt` — both are
+lazily imported (see `llm/claude_client.py`, `clients/enrichment_client.py`) so the core app
+never needs them. Kept separate deliberately so cloud builds (Streamlit Community Cloud, etc.)
+stay fast and don't risk failing on a heavier optional dependency's install.
+
 Tests: `python -m unittest discover tests`
 
 ## The 8 sample lead scenarios (in `sample_leads.json`) and what each proves
