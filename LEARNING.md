@@ -151,4 +151,25 @@ ever considered — never a parent/home-directory one. Verified both directions:
 absent + home `~/.env` present → mock mode; project `.env` present → live mode, regardless of
 what's sitting in the home directory.
 
+## 2026-07-07 — Dashboard crash: pandas/Altair thread-race (found via manual QA)
+
+Rapid-fire clicking "Run all 8 sample leads" on the Metrics Dashboard hit a real crash:
+`AttributeError: partially initialized module 'pandas' ... has no attribute 'Timestamp'
+(most likely due to a circular import)`. This project deliberately never uses pandas for its
+own data (plain dicts/lists throughout, per the "pragmatic, not over-engineered" brief), but
+Altair's own internal `Chart.to_dict()` unconditionally does a lazy `import pandas` on every
+call (to type-check values against `pd.Timestamp`), since pandas is an installed transitive
+dependency of altair regardless of whether *we* import it. The very first time that lazy
+import fires in the process, if it races against Streamlit's background file-watcher thread
+also touching pandas for the first time, Python's import system can hand back a
+partially-initialized module — a known class of bug, not something wrong in this project's
+own logic, but real and reproducible under rapid reruns.
+
+Fixed by adding an eager, explicit `import pandas` at the top of
+`pages/2_Metrics_Dashboard.py` (before Altair is touched at all), forcing pandas fully into
+`sys.modules` synchronously on page load and closing the race window. Added `pandas>=2.0` to
+`requirements.txt` explicitly rather than relying on it silently riding in as altair's
+transitive dependency. Stress-tested with 5 rapid-fire clicks of "Run all 8 sample leads"
+after the fix — zero errors, 40 total runs recorded, charts render correctly throughout.
+
 <!-- Add new entries above this line, newest at bottom is fine too — just keep dates. -->

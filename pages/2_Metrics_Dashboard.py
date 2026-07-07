@@ -1,11 +1,26 @@
 """Metrics Dashboard: KPI cards, cycle-time chart, routing distribution,
 pipeline-velocity lift, and the raw run log.
 
-Built with plain st.bar_chart / st.dataframe -- no pandas.
+All of our own data is plain dicts/lists -- no pandas DataFrames anywhere in
+this project's own logic. The one `import pandas` below is not that; it's a
+workaround for a third-party library thread-race bug, see its comment.
 
 See plan sections "Streamlit App" and "Telemetry".
 """
 from __future__ import annotations
+
+# Force pandas fully loaded eagerly, in this page's own main-thread execution,
+# before anything touches Altair. Altair's internal Chart.to_dict() does its
+# own lazy `import pandas` on every call (to type-check for pd.Timestamp
+# values) even though this project never imports pandas itself. If that lazy
+# import's very first execution ever in the process races against
+# Streamlit's background file-watcher thread also touching pandas, Python's
+# import system can hand back a partially-initialized module and raise
+# `AttributeError: partially initialized module 'pandas' ... (most likely due
+# to a circular import)` -- a real bug hit during manual QA (rapid-fire
+# "Run all 8 sample leads"), not a fluke. Doing the import here, synchronously,
+# on every page load closes that race window.
+import pandas  # noqa: F401
 
 import altair as alt
 import streamlit as st
