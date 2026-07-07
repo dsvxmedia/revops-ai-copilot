@@ -13,6 +13,10 @@ generation, proposal drafting, and telemetry, the way this role's JD describes t
 scenarios run deterministically with no API key and no network). See `CLAUDE.md` for the current
 build status and `LEARNING.md` for facts verified during the build.
 
+**Guides:** [USAGE.md](USAGE.md) — detailed how-to-use walkthrough (also built into the app
+itself; click **How to Use** in the sidebar). [BUILD_PROCESS.md](BUILD_PROCESS.md) — a full
+account of how this was built, plan to production, including every real bug found along the way.
+
 > Note: the real web-enrichment source (Scrapling) is opt-in via `REVOPS_WEB_ENRICHMENT=1` so the
 > default demo path is fully offline and deterministic; it falls back to mock on any failure.
 

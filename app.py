@@ -270,7 +270,8 @@ else:
         ui_theme.note(
             "Pick a sample lead and select <strong>Run Copilot</strong>. Then explore "
             "<strong>Before vs After</strong> and the <strong>Metrics Dashboard</strong> "
-            "in the sidebar.",
+            "in the sidebar. First time here? See <strong>How to Use</strong> in the "
+            "sidebar for a full walkthrough.",
             "sdr",
         ),
         unsafe_allow_html=True,
