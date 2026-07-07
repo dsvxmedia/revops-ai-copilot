@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+revops_copilot.db
+logs/
+.DS_Store
