@@ -78,7 +78,9 @@ def inject() -> None:
           color: {TEXT_MUTED} !important;
         }}
 
-        /* Buttons */
+        /* Buttons -- the "*" descendant rule is required because the broad
+           `p, li, span, label, div {{ color: TEXT }}` rule above otherwise wins
+           on the button's inner label text (higher-specificity tag match). */
         .stButton > button, [data-testid^="stBaseButton"] {{
           background: {ACCENT} !important;
           color: {SURFACE} !important;
@@ -87,6 +89,9 @@ def inject() -> None:
           font-weight: 600 !important;
           box-shadow: none !important;
           transition: background 0.18s ease-out;
+        }}
+        .stButton > button *, [data-testid^="stBaseButton"] * {{
+          color: {SURFACE} !important;
         }}
         .stButton > button:hover, [data-testid^="stBaseButton"]:hover {{
           background: {ACCENT_HOVER} !important;

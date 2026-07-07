@@ -101,8 +101,10 @@ class TestGenerationFallbackContract(unittest.TestCase):
             LeadSource="Webinar",
         )
         account = Account(Name="Acme University", Type="Higher Education", TechStack=["Canvas"])
-        brief = generation_service.generate_rep_brief(lead, account)
-        # Mock mode: deterministic template output must be guardrail-clean.
+        # Call the template function directly (not the public generate_rep_brief
+        # dispatcher) so this test stays deterministic and free regardless of
+        # whether a real ANTHROPIC_API_KEY happens to be set in the environment.
+        brief = generation_service._template_rep_brief(lead, account, None, None, None)
         payload = generation_service._context_payload(lead, account, None, None, None)
         ctx = generation_service._context_text(payload)
         ok, failures = g.validate_rep_brief(

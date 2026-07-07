@@ -102,4 +102,37 @@ heavier setup for a single-app polish pass.
 - Verified via gstack browser QA on localhost:8501 after the change: zero console errors on all
   3 pages, all 38 unit tests still pass, both charts render correctly with the new theme.
 
+## 2026-07-07 — Post-deploy bug fixes (button contrast, live-key test leak)
+
+Two real bugs found after deploying and adding a real `ANTHROPIC_API_KEY` to a local `.env`
+for live-mode testing:
+
+1. **Button text unreadable (dark-on-dark).** `.stButton > button { color: SURFACE }` in
+   `ui_theme.py` was being overridden by the broader `p, li, span, label, div { color: TEXT }`
+   rule, because Streamlit renders a button's label inside nested `<div>`/`<p>` elements and
+   that tag-selector rule has higher specificity than the inherited button color. Fixed by
+   adding `.stButton > button *, [data-testid^="stBaseButton"] * { color: SURFACE !important; }`
+   to force every descendant of the button, not just the button element itself.
+2. **Unit tests silently made real, billed Claude API calls when a real key was present in
+   `.env`.** `tests/test_guardrails_service.py::test_template_rep_brief_passes_guardrails`
+   called the public `generation_service.generate_rep_brief()` dispatcher (which is correctly
+   live-mode-sensitive for the real app) instead of the private `_template_rep_brief()`
+   function its own name and comment implied it was testing — unlike its sibling
+   `test_template_proposal_passes_its_own_guardrails`, which correctly called
+   `_template_proposal()` directly. With a real key in the environment this made the test suite
+   nondeterministic, 3000x slower (12.5s per call instead of instant), and quietly cost real
+   API credits on every local test run. Fixed by calling `_template_rep_brief(...)` directly.
+   **Gotcha also discovered while investigating:** `python -m unittest discover tests` (the
+   command this repo's README/CLAUDE.md documents) treats `tests` as `top_level_dir` and imports
+   test modules as loose top-level modules (`test_guardrails_service`, not
+   `tests.test_guardrails_service`) — so a `tests/__init__.py` env-var guard does **not**
+   reliably run first under this invocation. The added `tests/__init__.py` guard is left in
+   place as defense-in-depth for other invocation styles (e.g. pytest), but the real fix had to
+   be at the individual-test level, not the package level.
+
+Lesson for future test-writing in this repo: any test exercising `generation_service`'s public
+`generate_*` functions must either run with no key in the environment, or call the private
+`_template_*` function directly if the intent is specifically to test the deterministic
+fallback path — never assume "no key in .env" is a safe invariant for tests to rely on.
+
 <!-- Add new entries above this line, newest at bottom is fine too — just keep dates. -->
