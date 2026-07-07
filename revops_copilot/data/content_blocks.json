@@ -1,1 +1,72 @@
-[]
+[
+  {
+    "id": "CB-OVERVIEW-001",
+    "title": "Company Overview & Mission",
+    "tags": ["overview", "company", "mission"],
+    "contains_pricing": false,
+    "body": "Cengage partners with institutions to deliver affordable, outcomes-focused digital learning. Our courseware and platforms are built to improve student engagement, retention, and completion at scale."
+  },
+  {
+    "id": "CB-HIGHERED-001",
+    "title": "Higher Education Solution Summary",
+    "tags": ["higher-education", "solution", "courseware"],
+    "contains_pricing": false,
+    "body": "For colleges and universities, we provide integrated digital courseware, MindTap learning paths, and LMS integration (Canvas, Blackboard, Brightspace, Moodle) that reduce material costs for students while giving faculty real-time insight into learning outcomes."
+  },
+  {
+    "id": "CB-K12-001",
+    "title": "K-12 Solution Summary",
+    "tags": ["k-12", "solution", "district"],
+    "contains_pricing": false,
+    "body": "For K-12 districts, we deliver standards-aligned digital content, teacher dashboards, and district-wide reporting designed to support differentiated instruction and measurable proficiency gains."
+  },
+  {
+    "id": "CB-CORP-001",
+    "title": "Workforce & Corporate Training Summary",
+    "tags": ["corporate-training", "workforce", "solution"],
+    "contains_pricing": false,
+    "body": "For workforce and corporate learning, we offer skills-based content, certification-prep pathways, and completion analytics that tie learning investment to measurable upskilling outcomes."
+  },
+  {
+    "id": "CB-IMPL-001",
+    "title": "Implementation & Onboarding Plan",
+    "tags": ["implementation", "onboarding", "timeline"],
+    "contains_pricing": false,
+    "body": "A typical rollout runs on a phased 60-90 day plan: LMS integration and SSO in phase one, faculty enablement and content mapping in phase two, and full learner go-live with support in phase three. A dedicated onboarding manager coordinates each phase."
+  },
+  {
+    "id": "CB-SUPPORT-001",
+    "title": "Support & Success Model",
+    "tags": ["support", "success", "service"],
+    "contains_pricing": false,
+    "body": "Every institution is assigned a Customer Success Manager and access to 24/7 learner technical support, faculty training resources, and quarterly business reviews to track adoption and outcomes."
+  },
+  {
+    "id": "CB-SECURITY-001",
+    "title": "Security, Privacy & Accessibility",
+    "tags": ["security", "privacy", "accessibility", "compliance"],
+    "contains_pricing": false,
+    "body": "Our platforms are FERPA-aligned, support WCAG 2.1 AA accessibility, and use encryption in transit and at rest. Data privacy terms and accessibility conformance reports are available on request."
+  },
+  {
+    "id": "CB-OUTCOMES-001",
+    "title": "Outcomes & Case Evidence",
+    "tags": ["outcomes", "case-study", "results"],
+    "contains_pricing": false,
+    "body": "Institutions using our integrated courseware commonly report improved course completion and reduced student material costs. Reference case studies for comparable institutions are available during evaluation."
+  },
+  {
+    "id": "CB-PRICING-001",
+    "title": "Pricing & Commercial Terms",
+    "tags": ["pricing", "commercial", "terms"],
+    "contains_pricing": true,
+    "body": "Pricing is structured on an annual per-learner subscription with volume tiers, multi-year discounts, and optional professional-services packages. Final commercial terms are confirmed by the Account Executive based on enrollment and term length."
+  },
+  {
+    "id": "CB-RFP-001",
+    "title": "RFP Compliance Statement",
+    "tags": ["rfp", "compliance", "procurement"],
+    "contains_pricing": false,
+    "body": "We confirm the ability to meet standard procurement requirements including data-privacy terms, accessibility conformance, implementation timelines, and multi-year agreement structures as specified in the solicitation."
+  }
+]
