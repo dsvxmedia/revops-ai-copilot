@@ -5,8 +5,12 @@ Marketing). It simulates a Salesforce-centered "Revenue Ops AI Copilot" that tak
 lead or RFP request and automates enrichment, scoring/routing, rep-brief and email generation,
 proposal drafting, and telemetry — the way this role's JD describes the day-to-day work.
 
-**Status:** scaffolding complete, implementation in progress. See `CLAUDE.md` for the current
+**Status:** implemented and working end-to-end in mock mode (38 unit tests passing; all 8 sample
+scenarios run deterministically with no API key and no network). See `CLAUDE.md` for the current
 build status and `LEARNING.md` for facts verified during the build.
+
+> Note: the real web-enrichment source (Scrapling) is opt-in via `REVOPS_WEB_ENRICHMENT=1` so the
+> default demo path is fully offline and deterministic; it falls back to mock on any failure.
 
 ## Why this exists (business value)
 

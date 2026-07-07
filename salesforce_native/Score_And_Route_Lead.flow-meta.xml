@@ -1,3 +1,105 @@
-<!-- Illustrative, abbreviated Flow definition only — not deployed to any org. -->
-<!-- TODO(weaponx): Record-Triggered Flow (Lead created/updated) calling the invocable action. -->
-<!-- See plan section "Salesforce-Native Deployment Path". -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Score_And_Route_Lead
+  ILLUSTRATIVE, ABBREVIATED Record-Triggered Flow. Not deployed to any org and
+  not executed by the demo. Shows a Lead create/update trigger invoking the
+  RevOpsCopilotInvocable Apex action. See salesforce_native/README.md.
+-->
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <label>Score And Route Lead</label>
+    <processType>AutoLaunchedFlow</processType>
+    <status>Active</status>
+    <description>On Lead create/update, call the RevOps Copilot service to score, route, and brief the Lead, then continue.</description>
+
+    <start>
+        <objectType>Lead</objectType>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Open - Not Contacted</stringValue>
+            </value>
+        </filters>
+        <connector>
+            <targetReference>Call_Score_And_Route</targetReference>
+        </connector>
+    </start>
+
+    <actionCalls>
+        <name>Call_Score_And_Route</name>
+        <label>Score and Route Lead</label>
+        <locationX>176</locationX>
+        <locationY>158</locationY>
+        <actionName>RevOpsCopilotInvocable</actionName>
+        <actionType>apex</actionType>
+        <inputParameters>
+            <name>leadId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>company</name>
+            <value>
+                <elementReference>$Record.Company</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>industry</name>
+            <value>
+                <elementReference>$Record.Industry</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>annualRevenue</name>
+            <value>
+                <elementReference>$Record.AnnualRevenue</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>numberOfEmployees</name>
+            <value>
+                <elementReference>$Record.NumberOfEmployees</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>requestType</name>
+            <value>
+                <elementReference>$Record.RequestType__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>description</name>
+            <value>
+                <elementReference>$Record.Description</elementReference>
+            </value>
+        </inputParameters>
+        <connector>
+            <targetReference>Route_On_Human_Review</targetReference>
+        </connector>
+    </actionCalls>
+
+    <decisions>
+        <name>Route_On_Human_Review</name>
+        <label>Needs Human Review?</label>
+        <locationX>176</locationX>
+        <locationY>290</locationY>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>Yes_Needs_Review</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Call_Score_And_Route.needsHumanReview</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+</Flow>
