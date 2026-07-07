@@ -1,9 +1,13 @@
 # RevOps AI Copilot
 
-A working portfolio demo built for a Cengage job application (AI Automation Engineer – Sales &
-Marketing). It simulates a Salesforce-centered "Revenue Ops AI Copilot" that takes an inbound
-lead or RFP request and automates enrichment, scoring/routing, rep-brief and email generation,
-proposal drafting, and telemetry — the way this role's JD describes the day-to-day work.
+**[Live demo →](https://revops-ai-copilot.streamlit.app)** · built for a Cengage job application
+(AI Automation Engineer – Sales & Marketing)
+
+A working portfolio demo that simulates a Salesforce-centered "Revenue Ops AI Copilot" — takes an
+inbound lead or RFP request and automates enrichment, scoring/routing, rep-brief and email
+generation, proposal drafting, and telemetry, the way this role's JD describes the day-to-day work.
+
+![Run Copilot — full pipeline for a hot enterprise lead](docs/screenshots/run-copilot.png)
 
 **Status:** implemented and working end-to-end in mock mode (38 unit tests passing; all 8 sample
 scenarios run deterministically with no API key and no network). See `CLAUDE.md` for the current
@@ -88,11 +92,17 @@ Run tests: `python -m unittest discover tests`
    as it renders — data quality, enrichment, scoring breakdown, AE routing, rep brief, email.
 2. **RFP — Community College District**: shows the proposal-draft branch and the "Needs Human
    Review" banner (proposals are always gated to human review, by design).
+
+   ![Proposal draft with human-review gate](docs/screenshots/proposal-review.png)
 3. **Ambiguous — Workforce Training Co**: shows rule-score vs. AI-confidence disagreeing, forcing
    Needs Human Review — the guardrail/fallback story in action.
 4. Flip to **Before vs. After** for a qualitative + quantitative manual-vs-automated comparison.
+
+   ![Before vs After comparison](docs/screenshots/before-after.png)
 5. End on **Metrics Dashboard**: cycle time, automation success rate, and the pipeline-velocity
    lift estimate — tie it back to revenue language, not just "seconds saved."
+
+   ![Metrics Dashboard with pipeline-velocity model](docs/screenshots/metrics-dashboard.png)
 
 ## Limitations (stated plainly)
 
