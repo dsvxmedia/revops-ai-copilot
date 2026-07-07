@@ -6,3 +6,4 @@ venv/
 revops_copilot.db
 logs/
 .DS_Store
+.gstack/
