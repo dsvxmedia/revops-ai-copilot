@@ -81,5 +81,25 @@ decisions), not filler.
   remote/PR (no `origin` configured on this repo).
 - **Per-claim confidence tags**: see the 8 numbered items above — all `verified`.
 
+## Addendum — live browser QA (post-verification, orchestrator-driven)
+
+After the evaluator's PASS, ran the app live in a headless browser (gstack `qa-only`) through
+the full scripted demo path from the plan, to catch anything a headless health-check + unit
+tests wouldn't: hot-enterprise (Route to AE), RFP (proposal + "NEEDS HUMAN REVIEW" banner),
+ambiguous (rule/AI disagreement -> Needs Human Review, banner text matches the actual 58pt
+gap), cold-SMB (duplicate-company flag fired, real "Marketing Campaign Enrollment" step
+rendered), Before vs After page, and Metrics Dashboard (KPI cards, pipeline-velocity formula
+shown inline, cycle-time chart, routing-outcome distribution chart, run log table). Zero
+console errors across all of it. Three minor, non-blocking findings (cosmetic only, no fix
+required to consider the demo interview-ready, noted for optional future polish):
+1. Step numbers skip conditional steps (e.g. ①②③④⑥⑦⑨ when a lead isn't Nurture/RFP-routed)
+   — intentional but could briefly read as "missing a step" to a first-time viewer.
+2. Mock rep-brief template text repeats itself awkwardly for some industries (e.g. "a Higher
+   Education organization in Higher Education") — a copy nit in the deterministic template,
+   not a logic bug.
+3. Two benign Vega-Lite console warnings ("Infinite extent for field") appeared on first load
+   of the Metrics Dashboard chart bindings; did not affect the rendered charts (screenshot-
+   confirmed both charts display correctly).
+
 ---
 **Chain:** genesis (first trace in this ledger; no predecessor to hash)
