@@ -11,10 +11,17 @@ import os
 from pathlib import Path
 
 # --- Optional .env loading (python-dotenv is optional; never required) -------
+# Deliberately load ONLY this project's own .env (next to this package), not
+# python-dotenv's default upward directory search -- that default walks every
+# ancestor directory looking for a file named ".env" and would silently pick
+# up an unrelated one (e.g. a developer's global ~/.env with their own
+# personal API keys), breaking this project's "deterministic mock mode by
+# default, no key required" guarantee for anyone with such a file.
 try:  # pragma: no cover - trivial import guard
     from dotenv import load_dotenv
 
-    load_dotenv()
+    _PROJECT_ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
+    load_dotenv(dotenv_path=_PROJECT_ENV_PATH)
 except Exception:  # noqa: BLE001 - a missing dotenv must never break the app
     pass
 

@@ -135,4 +135,20 @@ Lesson for future test-writing in this repo: any test exercising `generation_ser
 `_template_*` function directly if the intent is specifically to test the deterministic
 fallback path — never assume "no key in .env" is a safe invariant for tests to rely on.
 
+**A third, more fundamental bug found while investigating the above:** `config.py`'s
+`load_dotenv()` (no explicit path) uses python-dotenv's default behavior of walking **every
+ancestor directory** of the current working directory looking for a file literally named
+`.env` — it is not scoped to the project. On this machine, `/Users/djackson4/.env` (the
+developer's home directory, a real ancestor of this project) has a personal
+`ANTHROPIC_API_KEY`, so even with this project's own `.env` renamed away entirely, the app
+still silently loaded that home-directory key and ran in live mode. This directly contradicts
+the project's headline guarantee — "mock mode by default, no key required, fully
+deterministic" — for anyone (a developer, possibly even a reviewer) who has a global `~/.env`
+with API keys of their own sitting around, which is a common personal setup.
+Fixed in `config.py` by passing an explicit `dotenv_path` scoped to the project root
+(`Path(__file__).resolve().parent.parent / ".env"`), so only *this* project's own `.env` is
+ever considered — never a parent/home-directory one. Verified both directions: project `.env`
+absent + home `~/.env` present → mock mode; project `.env` present → live mode, regardless of
+what's sitting in the home directory.
+
 <!-- Add new entries above this line, newest at bottom is fine too — just keep dates. -->
