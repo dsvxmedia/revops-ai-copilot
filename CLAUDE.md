@@ -37,6 +37,14 @@ mock on any failure (verified: unreachable host degrades in ~0.3s, no hang). Sco
 deterministic (rule + mock-AI heuristic) in **both** modes — only the 3 generation tasks call
 Claude live. See `LEARNING.md` for the rationale and other build-time decisions.
 
+**Visual design (2026-07-07):** redesigned per user feedback that the default Streamlit look
+plus emoji read as unpolished for a job-application demo. `revops_copilot/ui_theme.py` now
+supplies a shared warm-neutral palette, one restrained ink-teal accent, serif/sans type system,
+muted dot+tint status badges, and CSS-only entrance motion — call `ui_theme.inject()` at the top
+of every page. Zero emoji anywhere in the codebase (verified by regex sweep). Both dashboard
+charts use `st.altair_chart` (themed) instead of default `st.bar_chart`. See `LEARNING.md` for
+the Altair tooltip-typing gotcha and the copy bug it surfaced and fixed.
+
 ## Folder map (what lives where)
 
 - `app.py` — Streamlit entrypoint, the main "Run the Copilot" screen.
